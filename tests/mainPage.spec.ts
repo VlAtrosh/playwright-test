@@ -5,14 +5,15 @@ interface Elements {
   name: string;
   text?: string;
   attribute?: {
-    type: string,
-    value: string,
+    type: string;
+    value: string;
   };
 }
 
 const elements: Elements[] = [
   {
-    locator: (page: Page): Locator => page.getByRole('link', { name: 'Playwright logo Playwright' }),
+    locator: (page: Page): Locator =>
+      page.getByRole('link', { name: 'Playwright logo Playwright' }),
     name: 'Playwright logo',
     text: 'Playwright',
     attribute: {
@@ -82,6 +83,21 @@ const elements: Elements[] = [
       value: 'https://github.com/microsoft/playwright',
     },
   },
+  {
+    locator: (page: Page): Locator =>
+      page.getByRole('heading', { name: 'Playwright enables reliable' }),
+    name: 'Title',
+    text: 'Playwright enables reliable web automation for testing, scripting, and AI agents.',
+  },
+  {
+    locator: (page: Page): Locator => page.getByRole('link', { name: 'Get started' }),
+    name: 'Button Get started',
+    text: 'Get started',
+    attribute: {
+      type: 'href',
+      value: '/docs/intro',
+    },
+  },
 ];
 
 test.describe('Тесты главной страницы', () => {
@@ -98,21 +114,21 @@ test.describe('Тесты главной страницы', () => {
   });
 
   test('Проверка названия элементов навигации хедера', async ({ page }) => {
-    elements.forEach(({locator, name,text}) => {
+    elements.forEach(({ locator, name, text }) => {
       if (text) {
         test.step(`Проверка названия элемента ${name}`, async () => {
-          await expect(locator(page)).toContainText(text); 
-      });
+          await expect(locator(page)).toContainText(text);
+        });
       }
     });
   });
 
   test('Проверка атрибутов href элементов навигации хедера', async ({ page }) => {
-    elements.forEach(({locator, name, attribute}) => {
+    elements.forEach(({ locator, name, attribute }) => {
       if (attribute) {
         test.step(`Проверка атрибута href элемента ${name}`, async () => {
-          await expect(locator(page)).toHaveAttribute(attribute.type, attribute.value); 
-      });
+          await expect(locator(page)).toHaveAttribute(attribute.type, attribute.value);
+        });
       }
     });
   });
@@ -124,24 +140,5 @@ test.describe('Тесты главной страницы', () => {
     await themeButton.click();
 
     await expect.soft(page.locator('html')).toHaveAttribute('data-theme', 'dark');
-  });
-
-  test('Проверка загаловка страницы', async ({ page }) => {
-    await expect
-      .soft(page.getByRole('heading', { name: 'Playwright enables reliable' }))
-      .toBeVisible();
-    await expect
-      .soft(page.getByRole('heading', { name: 'Playwright enables reliable' }))
-      .toContainText(
-        'Playwright enables reliable web automation for testing, scripting, and AI agents.',
-      );
-  });
-
-  test('Проверка кнопки Get Started', async ({ page }) => {
-    await expect.soft(page.getByRole('link', { name: 'Get started' })).toBeVisible();
-    await expect.soft(page.getByRole('link', { name: 'Get started' })).toContainText('Get started');
-    await expect
-      .soft(page.getByRole('link', { name: 'Get started' }))
-      .toHaveAttribute('href', '/docs/intro');
   });
 });
