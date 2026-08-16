@@ -99,6 +99,7 @@ const elements: Elements[] = [
     },
   },
 ];
+const lightMods = ['dark', 'light'];
 
 test.describe('Тесты главной страницы', () => {
   test.beforeEach(async ({ page }) => {
@@ -140,5 +141,14 @@ test.describe('Тесты главной страницы', () => {
     await themeButton.click();
 
     await expect.soft(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  });
+
+  lightMods.forEach((value) => {
+    test(`Проверка стиля активного ${value} мода`, async ({ page }) => {
+      await page.evaluate((value) => {
+        document.querySelector('html')?.setAttribute('data-theme', value);
+      }, value);
+      await expect(page).toHaveScreenshot(`pageWith ${value}Mode.png`);
+    });
   });
 });
